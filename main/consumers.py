@@ -41,7 +41,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
     async def websocket_receive(self, event):
         print("receive", event)
         # print(event['text'])
-        objects = await self.set_device_status(event['text'], self.scope['user'])
+        # objects = await self.set_device_status(event['text'], self.scope['user'])
         # print(objects)
         data = event.get('text', None)
         if data is not None:
@@ -68,8 +68,8 @@ class DeviceConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.user_room,
                 {
-                    'type': 'device_status',
-                    'text': json.dumps(response)
+                    "type": "device_status",
+                    "text": response
                 }
             )
 
