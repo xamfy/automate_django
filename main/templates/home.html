@@ -13,11 +13,12 @@
       if (loc.protocol == 'https:'){
         wsStart = 'wss://'
       }
-      var endpoint = wsStart + loc.host + loc.pathname
+      var endpoint = wsStart + loc.host + loc.pathname + '/'
       var socket = new WebSocket(endpoint)
 
       socket.onmessage = function(e){
-        console.log("message", e )
+        console.log("message")
+        console.log(e.data)
       }
       socket.onopen = function(e){
         console.log("open", e )
@@ -29,11 +30,16 @@
         console.log("close", e )
       }
       function send() {
-          socket.send('LED');
+          var data = {
+          'name': 'LED',
+          'status': 'True'
+          }
+        socket.send(JSON.stringify(data))
       }
     </script>
   </head>
   <body>
+    <h1>{{request.user}}</h1>
     <button onclick=send();>Send</button>
   </body>
 </html>
