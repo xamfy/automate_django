@@ -1,1 +1,39 @@
-hey
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Websocket tests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% comment %} <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> {% endcomment %}
+    <script>
+      console.log(window.location)
+      var loc = window.location
+      var wsStart = 'ws://'
+      if (loc.protocol == 'https:'){
+        wsStart = 'wss://'
+      }
+      var endpoint = wsStart + loc.host + loc.pathname
+      var socket = new WebSocket(endpoint)
+
+      socket.onmessage = function(e){
+        console.log("message", e )
+      }
+      socket.onopen = function(e){
+        console.log("open", e )
+      }
+      socket.onerror = function(e){
+        console.log("error", e )
+      }
+      socket.onclose = function(e){
+        console.log("close", e )
+      }
+      function send() {
+          socket.send('LED');
+      }
+    </script>
+  </head>
+  <body>
+    <button onclick=send();>Send</button>
+  </body>
+</html>
