@@ -6,6 +6,7 @@
     <title>Websocket tests</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% comment %} <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
     <script>
       console.log(window.location)
       var loc = window.location
@@ -14,7 +15,7 @@
         wsStart = 'wss://'
       }
       var endpoint = wsStart + loc.host + loc.pathname + '/'
-      var socket = new WebSocket(endpoint)
+      var socket = new ReconnectingWebSocket(endpoint)
 
       socket.onmessage = function(e){
         console.log("message")

@@ -41,8 +41,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
     async def websocket_receive(self, event):
         print("receive", event)
         # print(event['text'])
-        # objects = await self.set_device_status(event['text'], self.scope['user'])
-        # print(objects)
+
         data = event.get('text', None)
         if data is not None:
             dict_data = json.loads(data)
@@ -53,6 +52,8 @@ class DeviceConsumer(AsyncWebsocketConsumer):
                 'name': name,
                 'status': status
             }
+            objects = await self.set_device_status(name, status, self.scope['user'])
+            print(objects)
             # new_event = {
             #     "type": "device_status",
             #     "text": json.dumps(response)
@@ -90,5 +91,8 @@ class DeviceConsumer(AsyncWebsocketConsumer):
         return User.objects.filter(username=user).values_list('devices', flat=True)
 
     @database_sync_to_async
-    def set_device_status(self, status, user):
-        return Device.objects.filter(owner=user)
+    def set_device_status(self, name, status, user):
+        device = Device.objects.get(owner=user, name=name)
+        device.status = status
+        device.save()
+        return device
