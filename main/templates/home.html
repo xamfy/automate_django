@@ -38,6 +38,9 @@
     <br>
     <div class="container h-100 w-100">
       <!-- <h4>{{ request.user }}</h4> -->
+      {% if not user.is_authenticated %}
+      <p>Please login</p>
+      {% else %}
       {% if devices %}
       <table style="width:30%">
         <tr>
@@ -61,6 +64,7 @@
       </table>
       {% else %}
       <p>There are no devices in the database.</p>
+      {% endif %}
       {% endif %}
       <br>
       <div role="alert" aria-live="assertive" aria-atomic="true" class="toast">

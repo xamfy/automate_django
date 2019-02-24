@@ -25,7 +25,8 @@ class DeviceListView(ListView):
     template_name = 'home.html'
 
     def get_queryset(self):
-        return Device.objects.filter(owner=self.request.user)
+        if(self.request.user.is_authenticated):
+            return Device.objects.filter(owner=self.request.user)
 
 
 class DeviceList(generics.ListCreateAPIView):

@@ -20,6 +20,9 @@ class DeviceConsumer(AsyncWebsocketConsumer):
         print("connected", event)
 
         me = self.scope['user']
+        self.user = self.scope["user"]
+        if(not self.user.is_authenticated):
+            return
         objects = await self.get_devices(me)
         print(me)
         # print(objects)
