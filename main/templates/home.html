@@ -5,42 +5,86 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Websocket tests</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% comment %} <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> {% endcomment %}
+    {% comment %}
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    {% endcomment %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
-    <script>
-      console.log(window.location)
-      var loc = window.location
-      var wsStart = 'ws://'
-      if (loc.protocol == 'https:'){
-        wsStart = 'wss://'
-      }
-      var endpoint = wsStart + loc.host + loc.pathname + '/'
-      var socket = new ReconnectingWebSocket(endpoint)
-
-      socket.onmessage = function(e){
-        console.log("message")
-        console.log(e.data)
-      }
-      socket.onopen = function(e){
-        console.log("open", e )
-      }
-      socket.onerror = function(e){
-        console.log("error", e )
-      }
-      socket.onclose = function(e){
-        console.log("close", e )
-      }
-      function send() {
-          var data = {
-          'name': "LED",
-          'status': "True"
-          }
-        socket.send(JSON.stringify(data))
-      }
-    </script>
   </head>
   <body>
-    <h1>{{request.user}}</h1>
-    <button onclick=send();>Send</button>
+    <h1>{{ request.user }}</h1>
+    {% if devices %}
+    <ul>
+      {% for device in devices %}
+      <li>
+        {{ device.name }} - {{ device.owner }}
+        <!-- {% if device.status %} 
+        <button id='on' onclick="send('{{device.name}}', false, '#on');">ON</button>
+        {% endif %}
+        
+        {% if not device.status %} 
+        <button id='off' onclick="send('{{device.name}}', true, '#off');">OFF</button>
+        {% endif %} -->
+        <button id='{{device.name}}' value="{{device.status|lower}}" onclick="send('{{device.name}}');">{{device.status | lower}}</button>
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>There are no devices in the database.</p>
+    {% endif %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+    </script>
+    <script type = "text/javascript">
+      // $(document).ready(function() {
+      //    document.write("Hello, World!");
+      // });
+   </script>
+   <script>
+    console.log(window.location);
+    var loc = window.location;
+    var wsStart = "ws://";
+    if (loc.protocol == "https:") {
+      wsStart = "wss://";
+    }
+    var endpoint = wsStart + loc.host + loc.pathname + "/";
+    var socket = new ReconnectingWebSocket(endpoint);
+
+    socket.onmessage = function(e) {
+      // console.log("message");
+      console.log(e.data);
+      // console.log(typeof(e.data));
+      var obj = JSON.parse(e.data);
+      // console.log(obj['name']);
+      // console.log(obj['status']);
+      $('#'+obj['name']).val(obj['status']);
+      $('#'+obj['name']).html(obj['status'].toString());      
+    };
+    socket.onopen = function(e) {
+      console.log("open", e);
+    };
+    socket.onerror = function(e) {
+      console.log("error", e);
+    };
+    socket.onclose = function(e) {
+      console.log("close", e);
+    };
+    function send(name) {
+      // status = (status == 'true');
+      // console.log(!status);
+      // if(id=='#on') {
+      //   $(id).html('off')
+      // } else {
+      //   $(id).html('on')
+      // }
+      var status = $('#'+name).val()
+      // console.log('status' + typeof(status));
+      status = (status == 'true');
+      var data = {
+        name: name,
+        status: !status
+      };
+      socket.send(JSON.stringify(data));
+    }
+  </script>
   </body>
 </html>

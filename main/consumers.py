@@ -5,8 +5,12 @@ from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
 from django.core import serializers
 
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import (
+    AsyncWebsocketConsumer,
+    AsyncJsonWebsocketConsumer
+)
 
+from .serializers import DeviceSerializer, UserSerializer
 
 from .models import Device
 
@@ -17,7 +21,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
 
         me = self.scope['user']
         objects = await self.get_devices(me)
-        # print(me)
+        print(me)
         # print(objects)
         # await asyncio.sleep(10)
         # await self.send({
@@ -43,7 +47,25 @@ class DeviceConsumer(AsyncWebsocketConsumer):
         # print(event['text'])
 
         data = event.get('text', None)
+        # hey = json.loads(data)
+        # hey['owner'] = self.scope['user']
+        # print(hey)
+        # serializer = DeviceSerializer(data=hey)
+        # if serializer.is_valid():
+        #     serializer.save()
+        # u = se(self.scope['user'])
+        # print("U:%s", u)
+        # print(f"hey: {hey}")
+        # hey = json.loads(json.dumps(hey))
+        # print(hey)
         if data is not None:
+            # print(data)
+            # serializer.create(validated_data=hey)
+
+            # if serializer.is_valid():
+            #     serializer.save()
+            # else:
+            #     print("not valid")
             dict_data = json.loads(data)
             name = dict_data['name']
             status = dict_data['status']
@@ -52,8 +74,10 @@ class DeviceConsumer(AsyncWebsocketConsumer):
                 'name': name,
                 'status': status
             }
+            # Device.objects.create(name=name, status=status,
+            #                       owner=self.scope['user'])
             objects = await self.set_device_status(name, status, self.scope['user'])
-            print(objects)
+            # print(objects)
             # new_event = {
             #     "type": "device_status",
             #     "text": json.dumps(response)
@@ -95,4 +119,3 @@ class DeviceConsumer(AsyncWebsocketConsumer):
         device = Device.objects.get(owner=user, name=name)
         device.status = status
         device.save()
-        return device
