@@ -9,26 +9,42 @@
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
     {% endcomment %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
   </head>
   <body>
     <h1>{{ request.user }}</h1>
     {% if devices %}
-    <ul>
+    <table style="width:30%">
+      <tr>
+        <th>Name</th>
+        <th>Status</th>    
+      </tr>
       {% for device in devices %}
-      <li>
-        {{ device.name }} - {{ device.owner }}
-        <!-- {% if device.status %} 
-        <button id='on' onclick="send('{{device.name}}', false, '#on');">ON</button>
-        {% endif %}
-        
-        {% if not device.status %} 
-        <button id='off' onclick="send('{{device.name}}', true, '#off');">OFF</button>
-        {% endif %} -->
-        <button id='{{device.name}}' value="{{device.status|lower}}" onclick="send('{{device.name}}');">{{device.status | lower}}</button>
-        </button>
-      </li>
+      <tr>
+        <td>{{ device.name }}</td>
+        <td>
+          <button id='{{device.name}}' value="{{device.status|lower}}" onclick="send('{{device.name}}');">{{device.status | lower}}</button>
+          </button>
+        </td>
+      </tr>
       {% endfor %}
-    </ul>
+    </table>
     {% else %}
     <p>There are no devices in the database.</p>
     {% endif %}

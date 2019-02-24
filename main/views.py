@@ -21,8 +21,11 @@ def api_root(request, format=None):
 class DeviceListView(ListView):
     model = Device
     context_object_name = 'devices'
-    queryset = Device.objects.all()
+    # queryset = Device.objects.all()
     template_name = 'home.html'
+
+    def get_queryset(self):
+        return Device.objects.filter(owner=self.request.user)
 
 
 class DeviceList(generics.ListCreateAPIView):
