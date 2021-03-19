@@ -12,7 +12,7 @@ daphne==2.2.5
 Django==2.1.11
 django-filter==2.1.0
 django-model-utils==3.1.2
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 hiredis==1.0.0
 hyperlink==18.0.0
 idna==2.8
